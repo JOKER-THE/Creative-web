@@ -40,11 +40,34 @@ class HomeController
         return $response;
     }
 
+    public function trailer(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            $data = $this->twig->render('home/trailer.html.twig', [
+                'trailer' => $this->getMovie((int) $request->getAttribute('id'))
+            ]);
+        } catch (\Exception $e) {
+            throw new HttpBadRequestException($request, $e->getMessage(), $e);
+        }
+
+        $response->getBody()->write($data);
+
+        return $response;
+    }
+
     protected function fetchData(): Collection
     {
         $data = $this->em->getRepository(Movie::class)
-            ->findAll();
+            ->findBy([], orderBy: ['pubDate' => 'DESC'], limit: 10);
 
         return new ArrayCollection($data);
+    }
+
+    protected function getMovie(int $id): Movie
+    {
+        $trailer = $this->em->getRepository(Movie::class)
+            ->findOneBy(['id' => $id]);
+
+        return $trailer;
     }
 }
