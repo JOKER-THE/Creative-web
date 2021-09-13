@@ -26,7 +26,8 @@ class HomeController
         try {
             $data = $this->twig->render('home/index.html.twig', [
                 'trailers' => $this->fetchData(),
-                'date' => Carbon::now()->isoFormat('DD.MM.YYYY kk:mm:ss')
+                'date' => Carbon::now()->isoFormat('DD.MM.YYYY kk:mm:ss'),
+                'controller' => (new \ReflectionClass($this))->getShortName()
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
