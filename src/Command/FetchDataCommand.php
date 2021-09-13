@@ -83,7 +83,7 @@ class FetchDataCommand extends Command
     protected function processXml(string $data): void
     {
         $xml = (new \SimpleXMLElement($data))->children();
-//        $namespace = $xml->getNamespaces(true)['content'];
+        $namespace = $xml->getNamespaces(true)['content'];
 //        dd((string) $xml->channel->item[0]->children($namespace)->encoded);
 
         if (!property_exists($xml, 'channel')) {
@@ -93,11 +93,13 @@ class FetchDataCommand extends Command
         $i = 0;
 
         foreach ($xml->channel->item as $item) {
+            $item->content = (string) $item->children($namespace);
             $trailer = $this->getMovie((string) $item->title)
                 ->setTitle((string) $item->title)
                 ->setDescription((string) $item->description)
                 ->setLink((string) $item->link)
                 ->setPubDate($this->parseDate((string) $item->pubDate))
+                ->setImage($this->parseImage((string) $item->content))
             ;
 
             $this->doctrine->persist($trailer);
@@ -129,5 +131,18 @@ class FetchDataCommand extends Command
         }
 
         return $item;
+    }
+
+    protected function parseImage(string $content): string
+    {
+        $dom = new \DOMDocument;
+        $dom->loadHTML($content);
+        $images = $dom->getElementsByTagName('img');
+
+        foreach ($images as $image) {
+            $image = $image->getAttribute('src');
+        }
+
+        return $image;
     }
 }
