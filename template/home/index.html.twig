@@ -5,6 +5,7 @@
 {% block content %}
     <div class="container">
         <h1 class="mt-5 mb-4">{{ trailers | length }} iTunes Movie trailers</h1>
+        <p>Current Date & Time: <span id="time">{{ date }}</span></p>
         <table class="table table-bordered">
             {% for trailer in trailers %}
                 <tr>
