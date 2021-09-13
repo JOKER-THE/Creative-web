@@ -89,6 +89,9 @@ class FetchDataCommand extends Command
         if (!property_exists($xml, 'channel')) {
             throw new RuntimeException('Could not find \'channel\' element in feed');
         }
+
+        $i = 0;
+
         foreach ($xml->channel->item as $item) {
             $trailer = $this->getMovie((string) $item->title)
                 ->setTitle((string) $item->title)
@@ -98,6 +101,8 @@ class FetchDataCommand extends Command
             ;
 
             $this->doctrine->persist($trailer);
+
+            if (++$i == 10) break;
         }
 
         $this->doctrine->flush();
