@@ -24,10 +24,12 @@ class HomeController
     public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
+            $reflection = new \ReflectionClass($this);
             $data = $this->twig->render('home/index.html.twig', [
                 'trailers' => $this->fetchData(),
                 'date' => Carbon::now()->isoFormat('DD.MM.YYYY kk:mm:ss'),
-                'controller' => (new \ReflectionClass($this))->getShortName()
+                'controller' => $reflection->getShortName(),
+                'method' => $reflection->getMethod(__FUNCTION__)->name
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
