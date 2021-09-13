@@ -10,12 +10,17 @@
             <p>Current Controller: {{ controller }}</p>
             <p>Current Method: {{ method }}</p>
         </div>
-        <table class="table table-bordered">
+        <div class="row">
             {% for trailer in trailers %}
-                <tr>
-                    <td>{{ trailer.title }}</td>
-                </tr>
+                <div class="col-md-3">
+                    <div class="card m-1">
+                        <img class="card-img-top" src="{{ trailer.image }}" alt="Poster">
+                        <div class="card-body">
+                            <p class="card-title"><a href="#">{{ trailer.title }}</a></p>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </table>
+        </div>
     </div>
 {% endblock %}
